@@ -49,12 +49,27 @@ class CommandOptionsParser {
             function isValidType(type: IOptionTypes, value: any) {
                 value = value?.toLowerCase()
 
-                if (type === "number" || type === "integer" || type === "float") {
-                    return !isNaN(value)
-                } else if (type === "boolean") {
-                    return ["true", "false"].includes(value)
-                } else if (type === "string") {
-                    return value ? true : false
+                const typeValidator = {
+                    number(value: any) {
+                        return !isNaN(value)
+                    },
+                    integer(value: any) {
+                        return isIntegerNumber(value)
+                    },
+                    float(value: any) {
+                        return !isIntegerNumber(value)
+                    },
+                    boolean(value: any) {
+                        return ["true", "false"].includes(value)
+                    },
+                    string(value: any) {
+                        return value ? true : false
+                    }
+                }
+
+                if (Object.keys(typeValidator).includes(type)) {
+                    // @ts-ignore
+                    return typeValidator[type](value)
                 }
                 
                 if (!value) return false
@@ -110,21 +125,21 @@ class CommandOptionsParser {
                 }
     
                 return isValid
-
-                function isIntegerNumber(value: any): boolean {
-                    if (!isNaN(value)) {
-                        parsedValue = Number(value)
-                        
-                        if (Number.isInteger(parsedValue)) return true
-
-                        return false
-                    }
-
-                    return false
-                }
             }
         }
-    }
+
+        function isIntegerNumber(value: any): boolean {
+            if (!isNaN(value)) {
+                let parsedValue = Number(value)
+                
+                if (Number.isInteger(parsedValue)) return true
+
+                return false
+            }
+
+            return false
+        }
+    } 
 }
 
 export default CommandOptionsParser
