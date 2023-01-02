@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.ts",
+  "types": "index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node example.ts",
+    "build": "tsc --declaration"
   },
   "repository": {
     "type": "git",
@@ -23,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/1Marcuth/bot-command-options-parser/issues"
   },
-  "homepage": "https://github.com/1Marcuth/bot-command-options-parser#readme"
+  "homepage": "https://github.com/1Marcuth/bot-command-options-parser#readme",
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  }
 }
