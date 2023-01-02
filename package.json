@@ -1,0 +1,27 @@
+{
+  "name": "bot-command-options-parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1Marcuth/bot-command-options-parser.git"
+  },
+  "keywords": [
+    "bot",
+    "command",
+    "options",
+    "parser",
+    "telegraf",
+    "guilded"
+  ],
+  "author": "Marcuth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/1Marcuth/bot-command-options-parser/issues"
+  },
+  "homepage": "https://github.com/1Marcuth/bot-command-options-parser#readme"
+}
