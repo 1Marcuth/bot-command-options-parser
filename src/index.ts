@@ -3,6 +3,12 @@ import IOptionTypes from "./interfaces/option-types"
 import IOption from "./interfaces/option"
 import IChoice from "./interfaces/choice"
 
+import isValidInteger from "./utils/validator/number/integer"
+import isValidFloat from "./utils/validator/number/float"
+import isValidBoolean from "./utils/validator/boolean"
+import isValidNumber from "./utils/validator/number"
+import isValidString from "./utils/validator/string"
+
 class CommandOptionsParser {
     private commandOptions: IOption[]
 
@@ -27,7 +33,7 @@ class CommandOptionsParser {
 
         return resultValidates
     
-        function validateOption(option: IOption, optionPassedValue: string | undefined) {
+        function validateOption(option: IOption, optionPassedValue: string) {
             const validateResult: IValidateResult = {
                 name: option.name,
                 type: option.type,
@@ -46,25 +52,15 @@ class CommandOptionsParser {
     
             return validateResult
     
-            function isValidType(type: IOptionTypes, value: any) {
-                value = value?.toLowerCase()
+            function isValidType(type: IOptionTypes, value: string) {
+                value = value?.trim()
 
                 const typeValidator = {
-                    number(value: any) {
-                        return !isNaN(value)
-                    },
-                    integer(value: any) {
-                        return isIntegerNumber(value)
-                    },
-                    float(value: any) {
-                        return !isIntegerNumber(value)
-                    },
-                    boolean(value: any) {
-                        return ["true", "false"].includes(value)
-                    },
-                    string(value: any) {
-                        return value ? true : false
-                    }
+                    number: (value: string) => isValidNumber(value),
+                    integer: (value: string) => isValidInteger(value),
+                    float: (value: string) => isValidFloat(value),
+                    boolean: (value: string) => isValidBoolean(value),
+                    string: (value: string) => isValidString(value)
                 }
 
                 if (Object.keys(typeValidator).includes(type)) {
@@ -82,62 +78,68 @@ class CommandOptionsParser {
 
                 let parsedValue: any
                 let isValid = false
-    
-                if (type === "number") {
-                    if (!isNaN(value)) {
-                        isValid = true
-                       parsedValue = Number(value)
-                    } else {
-                        parsedValue = null
-                    }
-                } else if (type === "boolean") {
-                    if (value?.toLowerCase() === "true") {
-                        isValid = true
-                        parsedValue = true
-                    } else if (value?.toLowerCase() === "false") {
-                        isValid = true
-                        parsedValue = false
-                    } else {
-                        parsedValue = null
-                    }
-                } else if (type === "integer") {
-                    if (isIntegerNumber(value)) {
-                        isValid = true
-                        parsedValue = Number(value)
-                    } else {
-                        parsedValue = null
-                    }
-                } else if (type === "float") {
-                    if (!isIntegerNumber(value)) {
-                        isValid = true
-                        parsedValue = Number(value)
-                    } else {
-                        parsedValue = null
-                    }
-                } else {
-                    parsedValue = String(value).toLowerCase()
-                    isValid = true
+
+                switch (type) {
+                    case "string":
+                        if (isValidString(value)) {
+                            parsedValue = String(value)
+                            isValid = true
+                        } else {
+                            parsedValue = null
+                            isValid = false
+                        }
+                        break
+
+                    case "number":
+                        if (isValidNumber(value)) {
+                            isValid = true
+                            parsedValue = Number(value)
+                        } else {
+                            parsedValue = null
+                        }
+                        break
+                    
+                    case "integer":
+                        if (isValidInteger(value)) {
+                            isValid = true
+                            parsedValue = Number(value)
+                        } else {
+                            parsedValue = null
+                        }
+                        break
+                    
+                    case "integer":
+                        if (isValidFloat(value)) {
+                            isValid = true
+                            parsedValue = Number(value)
+                        } else {
+                            parsedValue = null
+                        }
+                        break
+
+                    case "boolean":
+                        if (isValidBoolean(value)) {
+                            if (value?.toLowerCase() === "true") {
+                                isValid = true
+                                parsedValue = true
+                            } else {
+                                isValid = true
+                                parsedValue = false
+                            }
+                        } else {
+                            parsedValue = null
+                        }
+                        break
                 }
+
                 validateResult.values.parsed = parsedValue
     
                 if (choices) {
-                    return choices.find(choice => choice.value === parsedValue) ? true : false
+                    isValid = choices.find(choice => choice.value === parsedValue) ? true : false
                 }
-    
+
                 return isValid
             }
-        }
-
-        function isIntegerNumber(value: any): boolean {
-            if (!isNaN(value)) {
-                let parsedValue = Number(value)
-                
-                if (Number.isInteger(parsedValue)) return true
-
-                return false
-            }
-
-            return false
         }
     } 
 }

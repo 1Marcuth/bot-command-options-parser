@@ -3,8 +3,7 @@ enum OptionsTypes {
     float,
     integer,
     string,
-    boolean,
-    any
+    boolean
 }
 
 type IOptionTypes = keyof typeof OptionsTypes

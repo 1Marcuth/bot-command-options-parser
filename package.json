@@ -1,6 +1,6 @@
 {
   "name": "bot-command-options-parser",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
   "main": "dist/index.ts",
   "types": "index.d.ts",
